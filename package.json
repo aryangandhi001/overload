@@ -1,0 +1,14 @@
+{
+  "name": "overload",
+  "private": true,
+  "type": "module",
+  "description": "Personal training log + nutrition. The app itself has no runtime dependencies; these are build-time only.",
+  "scripts": {
+    "build:food": "node scripts/build-food-db.mjs"
+  },
+  "devDependencies": {
+    "@ifct2017/compositions": "^2.0.9",
+    "fflate": "^0.8.3",
+    "xlsx": "^0.18.5"
+  }
+}

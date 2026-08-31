@@ -1,0 +1,11 @@
+# The food database is never published. IFCT 2017 permits personal use with
+# acknowledgment but forbids electronic reproduction for a product without the
+# written permission of the Director, NIN. The app loads this from a file once,
+# on the device. Rebuild it with the scripts in scripts/.
+data/
+
+# Build caches: source spreadsheets and API responses, tens of MB.
+scripts/.cache/
+
+node_modules/
+*.log

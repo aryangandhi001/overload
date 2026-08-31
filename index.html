@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Overload</title>
+<meta name="description" content="Personal progressive-overload training log.">
+<meta name="theme-color" content="#14171C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Fonts are vendored, not fetched. Airplane mode has to look identical. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --bg:#14171C; --panel:#1B1F26; --panel2:#222731; --line:#2C323C;
+  --ink:#E9ECF1; --mute:#8B94A3; --dim:#5D6673;
+  --blue:#3B7DDD;      /* 20kg plate — reference / actionable */
+  --green:#3FAF6C;     /* improved */
+  --red:#D8413F;       /* 25kg plate — record */
+  --yellow:#E0B341;    /* target */
+  --r:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;overscroll-behavior-y:contain}
+body{padding-bottom:86px}
+.num{font-family:"Barlow Condensed",Inter,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{background:none;border:0;padding:0;cursor:pointer}
+input,select,textarea{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:0}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.wrap{max-width:520px;margin:0 auto;padding:0 14px}
+header.top{position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 72%,transparent);padding:16px 0 10px}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:600}
+h1{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:700;margin:2px 0 0;letter-spacing:.01em}
+h2{font-family:"Barlow Condensed",sans-serif;font-size:21px;font-weight:600;margin:22px 0 8px;letter-spacing:.02em}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:10px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mute{color:var(--mute)}.dim{color:var(--dim)}
+.small{font-size:13px}.tiny{font-size:11.5px}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 14px;font-weight:500;text-align:center;display:block;width:100%}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.btn.ghost{background:none}
+.btn.danger{color:var(--red);border-color:#402226}
+.btn.sm{padding:7px 11px;font-size:13px;width:auto;border-radius:9px}
+.pill{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--panel2);color:var(--mute);white-space:nowrap}
+.pill.pr{background:#3A1B1D;color:#FF7A76}
+.pill.up{background:#173226;color:#63D394}
+.pill.hold{background:#2E2718;color:var(--yellow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat .k{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;line-height:1}
+.stat .l{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.empty{text-align:center;color:var(--mute);padding:34px 16px;border:1px dashed var(--line);border-radius:var(--r)}
+
+/* bottom nav */
+nav.tabs{position:fixed;bottom:0;left:0;right:0;background:rgba(20,23,28,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs button{padding:11px 0 13px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:600;border-top:2px solid transparent;margin-top:-1px}
+nav.tabs button.on{color:var(--ink);border-top-color:var(--blue)}
+
+/* set rows — the signature: last session ghosted into the row it replaces */
+.exhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:2px}
+.exname{font-family:"Barlow Condensed",sans-serif;font-size:25px;font-weight:700;line-height:1.05}
+.refbar{display:flex;gap:14px;margin:10px 0 4px;font-size:12.5px}
+.refbar .lab{color:var(--dim);text-transform:uppercase;letter-spacing:.1em;font-size:10px;display:block;margin-bottom:3px}
+.refbar .v{color:var(--mute)}
+.refbar .tgt .v{color:var(--yellow)}
+.setrow{display:grid;grid-template-columns:22px 1fr 1fr 46px;gap:8px;align-items:end;padding:9px 0;border-bottom:1px solid var(--line)}
+.setrow:last-child{border-bottom:0}
+.setno{font-family:"Barlow Condensed",sans-serif;font-size:18px;color:var(--dim);font-weight:600;padding-bottom:9px}
+.setrow.warm .setno{color:var(--blue)}
+.ghost{font-size:11px;color:var(--dim);height:14px;font-variant-numeric:tabular-nums}
+.step{display:grid;grid-template-columns:32px 1fr 32px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.step button{height:38px;color:var(--mute);font-size:18px;line-height:1}
+.step button:active{background:#2B313B}
+.step input{background:none;border:0;border-radius:0;text-align:center;padding:0;height:38px;font-family:"Barlow Condensed",sans-serif;font-size:20px;font-weight:600}
+.step input:focus{outline:none}
+.tick{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);font-size:17px;color:var(--dim)}
+.setrow.done .step{background:#171A20;border-color:#232830}
+.setrow.done .step input{color:var(--mute)}
+.setrow.done .tick{background:var(--green);border-color:var(--green);color:#08160E}
+.setrow.done.better .tick{background:var(--green)}
+.setrow.flash{animation:flash .5s ease}
+@keyframes flash{0%{background:rgba(63,175,108,.22)}100%{background:transparent}}
+.rirbtn{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:7px;padding:2px 7px;margin-left:6px}
+
+.timerbar{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:29;background:var(--panel);border-top:1px solid var(--line)}
+.timerbar .fill{height:3px;background:var(--blue);transition:width 1s linear}
+.timerbar .in{max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:9px 14px}
+.timerbar .t{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700}
+
+.pager{display:flex;gap:8px;margin:14px 0 4px}
+.dots{display:flex;gap:5px;justify-content:center;margin:12px 0 2px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--blue)}.dot.fin{background:var(--green)}
+
+.list button.item{display:block;width:100%;text-align:left}
+.sep{height:1px;background:var(--line);margin:10px 0}
+.chip{display:inline-block;font-size:11.5px;color:var(--mute);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:4px 9px;margin:0 5px 5px 0}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+/* swipe-to-delete rows (food log) */
+.swipe{position:relative;overflow:hidden;border-radius:var(--r);margin-bottom:10px}
+.swipe-bg{position:absolute;inset:0;background:#3A1B1D;color:#FF7A76;display:flex;align-items:center;
+  justify-content:flex-end;padding-right:18px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.swipe-fg{position:relative;display:block;width:100%;text-align:left;transition:transform .18s ease;margin-bottom:0}
+.swipe-fg.card{margin-bottom:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:130px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px 16px;z-index:50;max-width:88vw;text-align:center;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast.pr{border-color:var(--red);background:#2A1517}
+.sheet{position:fixed;inset:0;background:rgba(10,12,15,.72);z-index:40;display:flex;align-items:flex-end}
+.fault{position:fixed;left:0;right:0;top:0;z-index:60;background:#3A1B1D;border-bottom:1px solid var(--red);
+  color:#FFC9C7;padding:10px 14px;font-size:13px;line-height:1.45;display:none}
+.fault b{color:#FF7A76}
+.fault button{float:right;color:#FF7A76;font-weight:600;margin-left:10px}
+.sheet .inner{background:var(--bg);border-top:1px solid var(--line);border-radius:18px 18px 0 0;width:100%;max-height:86vh;overflow:auto;padding:16px 14px 24px;max-width:520px;margin:0 auto}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="fault" id="fault"></div>
+<div id="app"><div class="wrap" style="padding-top:60px"><div class="empty">Loading your log…</div></div></div>
+<script src="core.js"></script>
+<script src="workout.js"></script>
+<script src="nutrition.js"></script>
+<script>boot();</script>
+</body>
+</html>
