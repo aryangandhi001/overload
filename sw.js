@@ -7,13 +7,14 @@
    ============================================================ */
 /* The food database is deliberately NOT precached: it is not published with the
    app (IFCT terms), and lives in IndexedDB after a one-time file load. */
-const CACHE = 'overload-shell-v8';
+const CACHE = 'overload-shell-v10';
 
 const SHELL = [
   './',
   './index.html',
   './core.js',
   './workout.js',
+  './body.js',
   './nutrition.js',
   './manifest.webmanifest',
   './fonts/fonts.css',

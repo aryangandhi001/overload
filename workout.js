@@ -193,6 +193,8 @@ function viewToday(){
     body += `<div class="empty">No routine yet.<div style="height:12px"></div><button class="btn primary" onclick="go('plans')">Build a routine</button></div>`;
   }
 
+  body += homeExtras();
+
   const wk = idx.filter(s=>daysBetween(s.date,today())<7).length;
   const vol = idx.filter(s=>daysBetween(s.date,today())<7).reduce((a,s)=>a+s.volume,0);
   body += `<div class="grid3">

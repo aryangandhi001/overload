@@ -154,6 +154,13 @@ const SETTINGS_CARDS = [];
 function registerSettingsCard(fn){ SETTINGS_CARDS.push(fn); }
 const settingsExtras = ()=> SETTINGS_CARDS.map(f=>{ try{ return f(); }catch(e){ return ''; } }).join('');
 
+/* Same idea for the home screen. Bodyweight belongs to neither training nor
+   food — it is the one measurement that judges both — so it lives in its own
+   module and registers a card here rather than being wired into either. */
+const HOME_CARDS = [];
+function registerHomeCard(fn){ HOME_CARDS.push(fn); }
+const homeExtras = ()=> HOME_CARDS.map(f=>{ try{ return f(); }catch(e){ return ''; } }).join('');
+
 function head(eyebrow,title,right=''){
   return `<header class="top"><div class="wrap"><div class="between"><div>
     <span class="eyebrow">${esc(eyebrow)}<span id="syncdot" style="display:none;color:var(--yellow)"> • saving</span></span>
@@ -163,7 +170,7 @@ function head(eyebrow,title,right=''){
 /* ========================= export / import envelope =========================
    Each module contributes its own slice and takes it back. Core owns only the
    envelope, so adding a module does not touch any existing module's code. */
-const EXPORT_V = 2;      // v1 = workout only. v2 adds the `nutrition` key.
+const EXPORT_V = 3;      // v1 workout only; v2 adds `nutrition`; v3 adds `body`.
 const DATA = [];
 function registerData(c){ DATA.push(c); }
 
@@ -257,6 +264,14 @@ async function initPWA(){
   if(!('serviceWorker' in navigator)) return;
   try{
     SWREG = await navigator.serviceWorker.register('sw.js');
+    /* Assets are served from cache first, so a new build lands on the *next*
+       open. Say so, rather than leaving a phone quietly running old code. */
+    SWREG.addEventListener('updatefound', ()=>{
+      const w = SWREG.installing; if(!w) return;
+      w.addEventListener('statechange', ()=>{
+        if(w.state === 'installed' && navigator.serviceWorker.controller) updateBanner();
+      });
+    });
     navigator.serviceWorker.addEventListener('message',ev=>{
       const m=ev.data||{}; LAST_SW_MSG=m;
       // The worker alerted while we were in the background — don't leave a dead
@@ -268,6 +283,14 @@ async function initPWA(){
     console.warn('[overload] service worker unavailable:',e.message);
   }
 }
+function updateBanner(){
+  const el = document.getElementById('fault'); if(!el || el.style.display==='block') return;
+  el.style.background = '#173226'; el.style.borderBottomColor = 'var(--green)'; el.style.color = '#9BE7BE';
+  el.innerHTML = '<button onclick="location.reload()" style="color:#63D394">Reload</button>' +
+                 '<b>A new version is ready.</b> Reload to use it.';
+  el.style.display = 'block';
+}
+
 async function storageNote(){
   const el=document.getElementById('storagenote'); if(!el) return;
   let bits=['Stored on this device only.'];

@@ -9,6 +9,7 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const workout = fs.readFileSync(path.join(ROOT, 'workout.js'), 'utf8');
 const nutrition = fs.readFileSync(path.join(ROOT, 'nutrition.js'), 'utf8');
 const core = fs.readFileSync(path.join(ROOT, 'core.js'), 'utf8');
+const bodyjs = fs.readFileSync(path.join(ROOT, 'body.js'), 'utf8');
 
 // Every top-level name the nutrition module defines.
 const nutNames = [...nutrition.matchAll(/^(?:async\s+)?function\s+([A-Za-z_$][\w$]*)|^(?:const|let|var)\s+([A-Za-z_$][\w$]*)/gm)]
@@ -33,5 +34,14 @@ const report = (label, list) => {
 report('workout.js does not reference nutrition', leaks);
 report("workout.js does not touch 'nut:' keys", keyLeaks);
 report('core.js names no feature module', coreLeaks);
+
+// body.js is the join point for phase 3, so it may read both — but neither
+// feature module may reach into it.
+const bodyNames = [...bodyjs.matchAll(/^(?:async\s+)?function\s+([A-Za-z_$][\w$]*)|^(?:const|let|var)\s+([A-Za-z_$][\w$]*)/gm)]
+  .map(m => m[1] || m[2]).filter(n => n !== 'BW_MIN' && n !== 'BW_MAX');
+report('workout.js does not reference bodyweight',
+  bodyNames.filter(n => new RegExp('\b' + n + '\b').test(workoutCode)));
+report('nutrition.js does not reference bodyweight',
+  bodyNames.filter(n => new RegExp('\b' + n + '\b').test(strip(nutrition))));
 console.log(`\n  nutrition defines ${nutNames.length} top-level names; none appear in workout.js.`);
 process.exit(bad ? 1 : 0);
