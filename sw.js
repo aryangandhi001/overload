@@ -7,7 +7,7 @@
    ============================================================ */
 /* The food database is deliberately NOT precached: it is not published with the
    app (IFCT terms), and lives in IndexedDB after a one-time file load. */
-const CACHE = 'overload-shell-v10';
+const CACHE = 'overload-shell-v11';
 
 const SHELL = [
   './',

@@ -272,6 +272,14 @@ async function initPWA(){
         if(w.state === 'installed' && navigator.serviceWorker.controller) updateBanner();
       });
     });
+    // A worker that installed on a previous visit is already sitting ready.
+    if(SWREG.waiting && navigator.serviceWorker.controller) updateBanner();
+    /* Ask for a fresh check on every open, and again when the app is brought
+       back to the foreground. An installed PWA resumes rather than navigates,
+       so without this it can sit on an old build for a long time. */
+    const check = ()=>{ try{ SWREG.update(); }catch(e){} };
+    check();
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) check(); });
     navigator.serviceWorker.addEventListener('message',ev=>{
       const m=ev.data||{}; LAST_SW_MSG=m;
       // The worker alerted while we were in the background — don't leave a dead
